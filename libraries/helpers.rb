@@ -377,6 +377,11 @@ EOSQL
       keyname = keyname_for(platform, platform_family, platform_version)
       info = Pkginfo.pkginfo[platform_family.to_sym][keyname]
       type_label = type.to_s.gsub('_package', '').capitalize
+
+      if info.nil?
+        Chef::Log.error("Your platform #{platform_family} #{keyname} is not supported by this cookbook.")
+        fail "Unsupported Platform version #{platform_family} #{keyname}"
+      end
       unless info[version]
         # Show availabe versions if the requested is not available on the current platform
         Chef::Log.error("Unsupported Version: You requested to install a Mysql #{type_label} version that is not supported by your platform")
